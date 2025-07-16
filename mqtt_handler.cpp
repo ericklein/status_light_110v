@@ -64,31 +64,30 @@ bool mqttConnect()
     return(topic);
   }
 
-bool mqttDeviceWiFiUpdate(uint8_t rssi)
-{
-  if (rssi = 0)
-    return false;
-  else
+  bool mqttDeviceWiFiUpdate(uint8_t rssi)
   {
-    String topic;
-    topic = generateTopic(VALUE_KEY_RSSI);  // Generate topic using config.h and data.h parameters
-    // add ,MQTT_QOS_1); if problematic, remove QOS parameter
-    Adafruit_MQTT_Publish rssiLevelPub = Adafruit_MQTT_Publish(&aq_mqtt, topic.c_str());
-    
-    mqttConnect();
+    bool result = false;
+    if (rssi!=0)
+    {
+      String topic;
+      topic = generateTopic(VALUE_KEY_RSSI);  // Generate topic using config.h and data.h parameters
+      // add ,MQTT_QOS_1); if problematic, remove QOS parameter
+      Adafruit_MQTT_Publish rssiLevelPub = Adafruit_MQTT_Publish(&aq_mqtt, topic.c_str());
+      
+      mqttConnect();
 
-    if (rssiLevelPub.publish(rssi))
-    {
-      debugMessage("MQTT publish: WiFi RSSI succeeded",1);
-      return true;
+      if (rssiLevelPub.publish(rssi))
+      {
+        debugMessage("MQTT publish: WiFi RSSI succeeded",2);
+        result = true;
+      }
+      else
+      {
+        debugMessage("MQTT publish: WiFi RSSI failed",2);
+      }
     }
-    else
-    {
-      debugMessage("MQTT publish: WiFi RSSI failed",1);
-      return false;
-    }
+    return(result);
   }
-}
 
 uint8_t mqttStatusLightMessage()
 {

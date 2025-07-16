@@ -7,7 +7,7 @@
 
 // Configuration Step 2: Set debug parameters
 // comment out to turn off; 1 = summary, 2 = verbose
-#define DEBUG 2
+// #define DEBUG 2
 
 // Configuration variables that change rarely
 
@@ -20,8 +20,6 @@ const uint8_t networkConnectAttemptInterval = 10;
 const uint16_t networkMQTTKeepAliveInterval = 300; // seconds
 
 // Hardware
-// Sleep time in seconds if hardware error occurs
-const uint8_t hardwareRebootInterval = 10;
 
 // relay featherwing
 const uint8_t hardwareRelayPin = 12;

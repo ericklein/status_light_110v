@@ -21,7 +21,6 @@ WiFiClient client;
 #include <Adafruit_MQTT.h>
 #include <Adafruit_MQTT_Client.h>
 Adafruit_MQTT_Client aq_mqtt(&client, MQTT_BROKER, MQTT_PORT, DEVICE_ID, MQTT_USER, MQTT_PASS);
-// Adafruit_MQTT_Subscribe statusLightSub = Adafruit_MQTT_Subscribe(&aq_mqtt, MQTT_SUB_TOPIC);
 extern Adafruit_MQTT_Subscribe statusLightSub;
 extern bool mqttConnect();
 extern bool mqttDeviceWiFiUpdate(uint8_t rssi);
@@ -33,6 +32,7 @@ uint8_t rssi = 0; // 0 value used to indicate no WiFi connection
 
 void setup() 
 {
+  // handle Serial first so debugMessage() works
   #ifdef DEBUG
     Serial.begin(115200);
     while (!Serial) ;
@@ -71,7 +71,7 @@ void loop()
   }
   else
   {
-    // Since we are subscribing only, we are required to ping the MQTT broker regularly
+    // keep the MQTT broker connection active for subscription via ping
     if((millis() - previousMQTTPingTime) > (networkMQTTKeepAliveInterval * 1000))
     {
       previousMQTTPingTime = millis();   
@@ -88,7 +88,7 @@ void loop()
 
     if (status != 2) // 2 is no message received
     {
-      debugMessage(String("Light status is ") + (status == 1 ? "On" : "Off"),1);
+      debugMessage(String("MQTT message; change light to ") + (status == 1 ? "On" : "Off"),1);
       digitalWrite(hardwareRelayPin, status);
     }
   }
